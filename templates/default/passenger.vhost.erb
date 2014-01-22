@@ -1,0 +1,82 @@
+PassengerMaxPoolSize <%= @max_pool_size %>
+PassengerSpawnMethod <%= @spawn_method %>
+PassengerMinInstances <%= @min_instances %>
+
+<%- if @ssl %>
+Listen 443
+NameVirtualHost *:443
+<% end -%>
+
+<VirtualHost *:80>
+  ServerName <%= @server_name %>
+  ServerAlias <%= @server_alias %>
+  DocumentRoot <%= @docroot %>
+  
+  ErrorDocument 404 /404.html
+  ErrorDocument 500 /500.html
+  
+  <%- if @proxy_pass.any? %>
+  ProxyRequests Off
+  ProxyPreserveHost on
+  ProxyVia On
+  <% end -%>
+  
+  <%- @proxy_pass.each do |proxy| %>
+  ProxyPass <%= proxy[:at] %> <%= proxy[:to] %>
+  ProxyPassReverse <%= proxy[:at] %> <%= proxy[:to] %>
+  <% end -%>
+  
+  # Handle maintenance mode
+  RewriteEngine on
+  RewriteCond %{REQUEST_URI} !\.(css|jpg|png|gif|js)$
+  RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+  RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+  RewriteRule ^.*$ /maintenance.html [L]
+  
+  <Directory <%= @docroot %>>
+    Options FollowSymLinks
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+  </Directory>
+</VirtualHost>
+
+<%- if @ssl %>
+<VirtualHost *:443>
+  ServerName <%= @server_name %>
+  ServerAlias <%= @server_alias %>
+  DocumentRoot <%= @docroot %>
+  
+  SSLEngine on
+  SSLCertificateFile /etc/apache2/ssl/zooniverse.org.crt
+  SSLCertificateKeyFile /etc/apache2/ssl/zooniverse.org.key
+  
+  <%- if @proxy_pass.any? %>
+  ProxyRequests Off
+  ProxyPreserveHost on
+  ProxyVia On
+  <% end -%>
+  
+  <%- @proxy_pass.each do |proxy| %>
+  ProxyPass <%= proxy[:at] %> <%= proxy[:to] %>
+  ProxyPassReverse <%= proxy[:at] %> <%= proxy[:to] %>
+  <% end -%>
+  
+  ErrorDocument 404 /404.html
+  ErrorDocument 500 /500.html
+  
+  # Handle maintenance mode
+  RewriteEngine on
+  RewriteCond %{REQUEST_URI} !\.(css|jpg|png|gif|js)$
+  RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+  RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+  RewriteRule ^.*$ /maintenance.html [L]
+  
+  <Directory <%= @docroot %>>
+    Options FollowSymLinks
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+  </Directory>
+</VirtualHost>
+<% end -%>
