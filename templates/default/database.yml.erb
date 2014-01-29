@@ -1,0 +1,11 @@
+<%= @env %>:
+  adapter: sqlite3
+  database: db/not_used.sqlite3
+
+zooniverse_home_<%= @env %>:
+  adapter: mysql2
+  encoding: utf8
+  database: zooniverse_home
+  host: <%= @zoo_home_host %>
+  username: <%= @zoo_home_user %>
+  password: <%= @zoo_home_pass %>

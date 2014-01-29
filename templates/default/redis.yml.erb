@@ -1,0 +1,9 @@
+redis_<%= @env %>: &<%= @env %>
+  host: <%= @redis_host %>
+  port: <%= @redis_port %>
+
+<% @projects.each_with_index do |p, i| %>
+ <%= "#{p}_#{@env}" %>:
+   <<: *<%= @env %>
+   db: <%= i %>
+ <% end %>

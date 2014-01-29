@@ -1,0 +1,7 @@
+<%= @env %>:
+  host: <%= @mongo_host %>
+  port: <%= @mongo_port %> 
+  cache_ttl: 60
+  replicated: False
+  safe: False
+  database: ouroboros_<%= @env %>
