@@ -3,7 +3,15 @@ redis_<%= @env %>: &<%= @env %>
   port: <%= @redis_port %>
 
 <% @projects.each_with_index do |p, i| %>
- <%= "#{p}_#{@env}" %>:
-   <<: *<%= @env %>
-   db: <%= i %>
- <% end %>
+<%= "#{p}_#{@env}" %>:
+  <<: *<%= @env %>
+  db: <%= i %>
+<% end %>
+
+pubsub_<%= @env %>:
+  <<: *<%= @env %>
+  db: 1
+
+sidekiq_<%= @env %>:
+  <<: *<%= @env %>
+  db: 2

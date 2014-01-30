@@ -36,11 +36,3 @@ directory "/rails/apps/#{node['rails_app']['name']}" do
   group node['rails_app']['group']
   mode "0775"
 end
-
-unless node['rails_app']['packages'].empty?
-  include_recipe 'rails_app::packages'
-end
-
-unless node['rails_app']['use_bundler']
-  include_recipe 'rails_app::bundler'
-end

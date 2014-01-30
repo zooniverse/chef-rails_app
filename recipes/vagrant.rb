@@ -1,6 +1,8 @@
-execute "symlink vagrant shared folder" do
-  cwd "/rails/apps/#{node['rails_app']['name']}"
-  command "ln -s /vagrant ./current"
+unless ::File.exists?("/rails/apps/#{node['rails_app']['name']}/current")
+  execute "symlink vagrant shared folder" do
+    cwd "/rails/apps/#{node['rails_app']['name']}"
+    command "ln -s /vagrant ./current"
+  end
 end
 
 directory "/rails/apps/#{node['rails_app']['name']}/shared" do
@@ -31,3 +33,10 @@ else
   include_recipe "rails_app::config"
 end
 
+unless node['rails_app']['packages'].empty?
+  include_recipe 'rails_app::packages'
+end
+
+if node['rails_app']['use_bundler']
+  include_recipe 'rails_app::bundler'
+end
