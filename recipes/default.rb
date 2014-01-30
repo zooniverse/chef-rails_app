@@ -8,11 +8,6 @@ end
 rbenv_global node['rails_app']['ruby_version'] do
   action :create
 end
-
-gem_package "bundler" do
-  action :install
-end
-
 group node['rails_app']['group'] do
   action :create
 end
@@ -40,4 +35,12 @@ directory "/rails/apps/#{node['rails_app']['name']}" do
   owner node['rails_app']['user']
   group node['rails_app']['group']
   mode "0775"
+end
+
+unless node['rails_app']['packages'].empty?
+  include_recipe 'rails_app::packages'
+end
+
+unless node['rails_app']['use_bundler']
+  include_recipe 'rails_app::bundler'
 end

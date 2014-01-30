@@ -30,3 +30,4 @@ if node['rails_app']['config_tarball']
 else
   include_recipe "rails_app::config"
 end
+
