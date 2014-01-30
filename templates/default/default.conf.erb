@@ -1,0 +1,41 @@
+upstream ouroboros_dev {
+  server unix:/tmp/<%= @app_name %> fail_timeout=0;
+}
+
+server {
+  listen 80 deferred;
+  
+  root /rails/apps/<%= @app_name %>/current/public;
+  
+  location / {
+    proxy_pass http://ouroboros_dev;
+    proxy_redirect off;
+    
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    
+    client_max_body_size 10m;
+    
+    proxy_connect_timeout 90;
+    proxy_send_timeout 90;
+    proxy_read_timeout 90;
+    
+    proxy_buffer_size 4k;
+    proxy_buffers 4 32k;
+    proxy_busy_buffers_size 64k;
+    proxy_temp_file_write_size 64k;
+  }
+  
+  location ~ ^/(assets)/ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+  
+  error_page 500 502 503 504 /50x.html;
+  location = /50x.html {
+    root html;
+  }
+}

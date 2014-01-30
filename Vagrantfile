@@ -55,10 +55,9 @@ Vagrant.configure("2") do |config|
 
     chef.run_list = [
       "recipe[ruby_build]",
-      "recipe[nginx-zoo::default]",
       "recipe[rails_app]",
       "recipe[rails_app::vagrant]",
-      "recipe[unicorn]"
+      "recipe[rails_app::nginx]"
     ]
   end
 end
