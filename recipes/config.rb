@@ -14,17 +14,19 @@ directory "/rails/apps/#{node['rails_app']['name']}/shared/config" do
 end
 
 node['rails_app']['configuration']['files'].each do |f|
-  template "/rails/apps/#{node['rails_app']['name']}/shared/config/#{f}.yml" do
-    source "#{f}.yml.erb"
-    variables template_vars
-    owner node['rails_app']['user']
-    mode "0755"
-    action :create
+  template_path = "/rails/apps/#{node['rails_app']['name']}/shared/config/#{f}.yml"
+  unless ::File.exist?(template_path)
+    template template_path do
+      source "#{f}.yml.erb"
+      variables template_vars
+      owner node['rails_app']['user']
+      mode "0755"
+      action :create
+    end
   end
 
-  unless ::File.exist?("/rails/apps/#{node['rails_app']['name']}/current/config/#{f}.yml")
-    execute "symlink_config" do
-      command "ln -s /rails/apps/#{node['rails_app']['name']}/shared/config/#{f}.yml /rails/apps/#{node['rails_app']['name']}/current/config/#{f}.yml"
-    end
+  config_file_path = "/rails/apps/#{node['rails_app']['name']}/current/config/#{f}.yml"
+  execute "symlink_config" do
+    command "if [ ! -e \"#{config_file_path}\" ] ; then ln -s #{template_path} #{config_file_path} ; fi"
   end
 end
