@@ -1,17 +1,32 @@
-redis_<%= @env %>: &<%= @env %>
+<% @envs.each do |env| -%>
+<%= env %>: &<%= env %>
   host: <%= @redis_host %>
   port: <%= @redis_port %>
 
-<% @projects.each_with_index do |p, i| %>
-<%= "#{p}_#{@env}" %>:
-  <<: *<%= @env %>
-  db: <%= i %>
-<% end %>
-
-pubsub_<%= @env %>:
-  <<: *<%= @env %>
+pubsub_<%= env %>:
+  <<: *<%= env %>
   db: 1
 
-sidekiq_<%= @env %>:
-  <<: *<%= @env %>
+sidekiq_<%= env %>:
+  <<: *<%= env %>
   db: 2
+
+talk_<%= env %>:
+  <<: *<%= env %>
+  db: 3
+
+zooniverse_live_<%= env %>:
+  <<: *<%= env %>
+  db: 4
+
+cache_<%= env %>:
+  <<: *<%= env %>
+  db: 5
+
+<% @projects.each_with_index do |p, i| %>
+<%= "#{p}_#{env}" %>:
+  <<: *<%= env %>
+  db: <%= i %>
+<% end -%>
+
+<% end -%>

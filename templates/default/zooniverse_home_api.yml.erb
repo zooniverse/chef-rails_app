@@ -1,4 +1,7 @@
-<%= @env %>:
+<% @envs.each do |env| -%>
+<%= env %>:
   host: http://localhost:3010
   username: api
   password: api
+
+<% end -%>

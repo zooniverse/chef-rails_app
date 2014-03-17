@@ -1,4 +1,5 @@
-<%= @env %>:
+<% @envs.each do |env| -%>
+<%= env %>:
   enable_starttls_auto: true
   address: email-smtp.us-east-1.amazonaws.com
   port: 587
@@ -6,3 +7,5 @@
   authentication: plain
   user_name:
   password:
+
+<% end -%>
