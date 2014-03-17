@@ -3,7 +3,7 @@ rbenv_gem "bundler" do
   rbenv_version node['rails_app']['ruby_version']
 end
 
-execute "bundle install" do 
+rbenv_script "bundle install" do
   cwd "/rails/apps/#{node['rails_app']['name']}/current"
-  command "bundle install"
+  code "bundle install"
 end

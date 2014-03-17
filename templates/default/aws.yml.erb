@@ -1,3 +1,5 @@
-<%= @env %>:
+<% @envs.each do |env| -%>
+<%= env %>:
   access_key_id:
   secret_access_key:
+<% end -%>

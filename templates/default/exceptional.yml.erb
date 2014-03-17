@@ -1,2 +1,5 @@
-<%= @env %>:
+<% @envs.each do |env| -%>
+<%= env %>:
   enabled: false
+
+<% end -%>

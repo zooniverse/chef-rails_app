@@ -16,7 +16,11 @@ unless ::File.exist?("/usr/local/nginx/conf/sites-enabled/#{node['rails_app']['n
   execute "symlink to sites-enabled" do
     command "ln -s #{src} #{dest}"
 
-    notifies :restart, "service[nginx]"
-    notifies :start, "service[#{node['unicorn']['site']['name']}]"
+    if node.chef_environment == "production"
+      notifies :restart, "service[nginx]"
+      notifies :start, "service[#{node['unicorn']['site']['name']}]"
+    else
+      notifies :stop, "service[nginx]"
+    end
   end
 end

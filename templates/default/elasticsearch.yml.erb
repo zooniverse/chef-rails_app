@@ -1,3 +1,6 @@
-<%= @env %>:
+<% @envs.each do |env| -%>
+<%= env %>:
   host: <%= @elasticsearch_host %>
   port: <%= @elasticsearch_port %>
+
+<% end -%>

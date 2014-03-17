@@ -1,6 +1,4 @@
-template_vars = {
-  env: node['rails_app']['environment']
-}
+template_vars = {}
 
 node['rails_app']['configuration']['vars'].each do |k, v|
   template_vars[k.to_sym] = v
@@ -15,12 +13,14 @@ end
 
 node['rails_app']['configuration']['files'].each do |f|
   template_path = "/rails/apps/#{node['rails_app']['name']}/shared/config/#{f}.yml"
+  template_vars[:envs] = [ node['rails_app']['environment'] ] | %w(test development staging production)
   unless ::File.exist?(template_path)
     template template_path do
       source "#{f}.yml.erb"
       variables template_vars
       owner node['rails_app']['user']
-      mode "0755"
+      group node['rails_app']['group']
+      mode "0775"
       action :create
     end
   end

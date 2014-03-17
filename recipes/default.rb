@@ -8,8 +8,19 @@ end
 rbenv_global node['rails_app']['ruby_version'] do
   action :create
 end
+
+rbenv_gem "rubygems-update" do
+  action :install
+  rbenv_version node['rails_app']['ruby_version']
+end
+
+rbenv_script "update rubygems" do
+  code "gem update --system"
+end
+
 group node['rails_app']['group'] do
   action :create
+  members "vagrant"
 end
 
 user node['rails_app']['user'] do
